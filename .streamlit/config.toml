@@ -1,0 +1,11 @@
+# Tema do app: escuro e roxo (o Streamlit usa essas cores nos campos, botões e abas)
+[theme]
+base = "dark"
+primaryColor = "#9d4edd"
+backgroundColor = "#0b0d24"
+secondaryBackgroundColor = "#151a45"
+textColor = "#ffffff"
+
+[client]
+# esconde o botão "Deploy" do topo
+toolbarMode = "minimal"
