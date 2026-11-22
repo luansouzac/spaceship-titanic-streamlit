@@ -13,7 +13,9 @@ usando modelos de Machine Learning treinados por nós. O app roda no Google Cola
 | `modelos/` | Modelos treinados e exportados com `joblib` (`.pkl`), mais a lista de colunas e o padronizador |
 | `data/` | `train.csv` e `test.csv` da competição no Kaggle |
 | `.streamlit/config.toml` | Tema escuro e roxo do app |
-| `prints_app/` | Capturas de tela do app funcionando |
+| `prints_ngrok/` | Capturas de tela do app funcionando pelo link público do Ngrok (usadas no relatório) |
+| `prints_app/` | Capturas de tela do app rodando localmente |
+| `relatorio_execucao.pdf` | Relatório de execução pedido no trabalho (grupo, link do Ngrok e evidências) |
 
 ## Como rodar no Google Colab (jeito pedido no trabalho)
 
@@ -27,10 +29,10 @@ Se o link der erro ou a página ficar em branco, rode a última célula (`!cat l
 
 ## Como rodar no computador (opcional)
 
-Com os `.pkl` já em `modelos/`:
+Com os `.pkl` já em `modelos/` (gerados no Colab com `scikit-learn 1.6.1`, por isso a versão fixada abaixo):
 
 ```bash
-pip install streamlit scikit-learn catboost joblib altair pandas
+pip install streamlit scikit-learn==1.6.1 catboost joblib altair pandas
 streamlit run app_spaceship.py
 ```
 
