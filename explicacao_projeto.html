@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spaceship Titanic – Slides de estudo</title>
+<style>
+:root{--p:#7b2cbf;--p2:#9d4edd;--p3:#c77dff;--soft:#f3e8ff;--soft2:#faf5ff;--txt:#231433;--mut:#6b5b7d;--line:#e4d4f4}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#ece3f5;overflow:hidden;font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;color:var(--txt)}
+#stage{position:absolute;left:50%;top:50%;width:1280px;height:720px;transform-origin:center;background:#fff;box-shadow:0 10px 50px #7b2cbf33;overflow:hidden}
+.slide{position:absolute;inset:0;padding:64px 80px 70px;display:none;flex-direction:column}
+.slide.on{display:flex}
+.slide::before{content:"";position:absolute;left:0;top:0;bottom:0;width:14px;background:linear-gradient(180deg,var(--p),var(--p3))}
+.kicker{color:var(--p2);font-weight:800;letter-spacing:.22em;font-size:15px;text-transform:uppercase;margin-bottom:10px}
+h1{font-size:76px;line-height:1;color:var(--p);font-weight:900;text-transform:uppercase;letter-spacing:.02em}
+h2{font-size:46px;line-height:1.1;color:var(--txt);font-weight:800;margin-bottom:28px}
+h2 b{color:var(--p)}
+.body{flex:1;display:flex;flex-direction:column;justify-content:center;font-size:27px;line-height:1.5}
+ul{list-style:none}
+ul li{position:relative;padding-left:34px;margin:12px 0}
+ul li::before{content:"";position:absolute;left:0;top:.55em;width:14px;height:14px;background:var(--p2);transform:rotate(45deg) scale(.8)}
+code{background:var(--soft);color:var(--p);padding:2px 9px;border-radius:5px;font-family:ui-monospace,Menlo,monospace;font-size:.82em;font-weight:600}
+.mut{color:var(--mut)}
+.box{background:var(--soft2);border:2px solid var(--line);border-left:8px solid var(--p2);border-radius:8px;padding:18px 26px;margin-top:22px;font-size:24px}
+.box b.t{color:var(--p);text-transform:uppercase;letter-spacing:.1em;font-size:.72em;display:block;margin-bottom:4px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.cards{display:grid;gap:18px}
+.c3{grid-template-columns:repeat(3,1fr)}.c2{grid-template-columns:repeat(2,1fr)}
+.card{background:var(--soft2);border:2px solid var(--line);border-radius:10px;padding:20px 24px;font-size:23px;line-height:1.4}
+.card h4{color:var(--p);font-size:25px;margin-bottom:6px}
+.card .big{font-size:56px;font-weight:900;color:var(--p);line-height:1}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:12px;font-size:22px;font-weight:700}
+.flow div{background:var(--soft);border:2px solid var(--p3);color:var(--p);padding:14px 18px;border-radius:10px;text-align:center}
+.flow i{color:var(--p2);font-style:normal;font-size:30px}
+table{width:100%;border-collapse:collapse;font-size:23px}
+th{background:var(--p);color:#fff;text-align:left;padding:10px 16px;font-size:17px;letter-spacing:.1em;text-transform:uppercase}
+td{padding:11px 16px;border-bottom:2px solid var(--line)}
+tr.best td{background:var(--soft);font-weight:800;color:var(--p)}
+pre{background:#1f1233;color:#eadcff;border-radius:10px;padding:22px 28px;font-size:21px;line-height:1.55;overflow:hidden}
+pre i{color:#a98bc7;font-style:normal}
+.chk{list-style:none}
+.chk li{padding:0;margin:11px 0}
+.chk li::before{display:none}
+.chk label{display:flex;gap:18px;align-items:flex-start;background:var(--soft2);border:2px solid var(--line);border-radius:10px;padding:14px 20px;cursor:pointer;font-size:24px;line-height:1.3}
+.chk input{width:30px;height:30px;accent-color:var(--p);flex:none;margin-top:2px}
+.chk small{display:block;font-size:18px;color:var(--mut);margin-top:3px;font-weight:400}
+.chk b{font-weight:700}
+.chk input:checked + div b{color:var(--p)}
+.chk label:has(input:checked){background:var(--soft);border-color:var(--p3)}
+.imgs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.imgs figure{border:2px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.imgs img{width:100%;height:380px;object-fit:cover;object-position:top;display:block}
+.imgs figcaption{padding:8px 12px;font-size:18px;color:var(--mut);text-align:center}
+.capa{justify-content:center}
+.capa p{font-size:30px;color:var(--mut);margin-top:22px;max-width:900px;line-height:1.4}
+.capa .tags{margin-top:40px;display:flex;gap:14px}
+.capa .tags span{background:var(--soft);color:var(--p);border:2px solid var(--p3);padding:8px 20px;border-radius:30px;font-weight:700;font-size:21px}
+a{color:var(--p);font-weight:600;word-break:break-all}
+.q{font-size:24px}
+.q .a{color:var(--mut);margin-top:6px;font-size:23px}
+.hud{position:absolute;left:0;right:0;bottom:0;height:46px;display:flex;align-items:center;justify-content:space-between;padding:0 30px 0 44px;font-size:16px;color:var(--mut);z-index:3}
+.hud b{color:var(--p)}
+#bar{position:absolute;left:0;bottom:0;height:5px;background:linear-gradient(90deg,var(--p),var(--p3));width:0;transition:width .25s;z-index:4}
+#nav{margin-left:16px;display:inline-flex;gap:6px;vertical-align:middle}
+#nav button{background:var(--p);color:#fff;border:0;border-radius:6px;width:34px;height:28px;font-size:18px;cursor:pointer}
+#nav button:hover{background:var(--p2)}
+.grid-print #stage{position:static;transform:none!important;margin:20px auto}
+</style>
+</head>
+<body>
+<div id="stage">
+
+<!-- 1 CAPA -->
+<section class="slide capa">
+  <div class="kicker">Visualização de Dados · IF Sudeste MG</div>
+  <h1>Spaceship<br>Titanic</h1>
+  <p>Data app com Streamlit e Ngrok que prevê se um passageiro foi transportado para outra dimensão.</p>
+  <div class="tags"><span>Streamlit</span><span>Machine Learning</span><span>Ngrok</span><span>Luan Souza · Francisco Carlos</span></div>
+</section>
+
+<!-- 2 PROBLEMA -->
+<section class="slide">
+  <div class="kicker">O problema</div>
+  <h2>Quem foi <b>transportado</b>?</h2>
+  <div class="body">
+    <ul>
+      <li>Competição do <b>Kaggle</b>: uma nave colide com uma anomalia e parte dos passageiros some para outra dimensão.</li>
+      <li>Cada linha = um passageiro. O alvo é <code>Transported</code> (True/False).</li>
+      <li>É uma <b>classificação binária</b>: 8.693 passageiros no treino, 4.277 no teste.</li>
+      <li>Neste trabalho: pegar o modelo do trabalho anterior e <b>transformar em um app web</b>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 3 FLUXO -->
+<section class="slide">
+  <div class="kicker">Visão geral</div>
+  <h2>O caminho <b>dos dados até o link</b></h2>
+  <div class="body">
+    <div class="flow">
+      <div>train.csv<br>test.csv</div><i>→</i><div>Notebook<br>EDA + tratamento</div><i>→</i><div>Treino<br>GridSearchCV</div><i>→</i>
+      <div>Exporta<br>.pkl</div><i>→</i><div>App<br>Streamlit</div><i>→</i><div>Ngrok<br>link público</div>
+    </div>
+    <div class="box"><b class="t">Ideia central</b>Treinamos <b>uma vez</b> no notebook, salvamos os modelos em arquivos e o app só carrega e prevê.</div>
+  </div>
+</section>
+
+<!-- 7 EDA -->
+<section class="slide">
+  <div class="kicker">Etapa 1</div>
+  <h2>Análise exploratória <b>(EDA)</b></h2>
+  <div class="body">
+    <div class="cards c3">
+      <div class="card"><div class="big">50%</div>Alvo balanceado: metade transportada, metade não.</div>
+      <div class="card"><div class="big">82%</div>Em sono criogênico foram transportados (contra 33% acordados).</div>
+      <div class="card"><div class="big">~2%</div>de NaN em quase todas as colunas.</div>
+    </div>
+    <ul style="font-size:24px;margin-top:20px">
+      <li>Gastos muito assimétricos: poucos gastam muito (outliers).</li>
+      <li><b>Treino e teste não têm nenhum grupo de viagem em comum.</b></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 8 FEATURES -->
+<section class="slide">
+  <div class="kicker">Etapa 2</div>
+  <h2>Variáveis <b>novas</b></h2>
+  <div class="body" style="font-size:23px">
+    <table>
+      <tr><th>Variável</th><th>De onde vem</th></tr>
+      <tr><td><code>Grupo</code> e <code>TamanhoGrupo</code></td><td>4 primeiros dígitos do PassengerId e quantos têm o mesmo</td></tr>
+      <tr><td><code>Deck</code>, <code>NumCabine</code>, <code>Lado</code></td><td>Cabin vem como "deck/número/lado": separamos</td></tr>
+      <tr><td><code>GastoTotal</code></td><td>Soma dos 5 gastos</td></tr>
+      <tr><td><code>GastoLuxo</code></td><td>RoomService + Spa + VRDeck</td></tr>
+      <tr><td><code>GastoBasico</code></td><td>FoodCourt + ShoppingMall</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 9 NaN -->
+<section class="slide">
+  <div class="kicker">Etapa 3</div>
+  <h2>Valores ausentes: <b>regras antes da média</b></h2>
+  <div class="body" style="font-size:25px">
+    <ul>
+      <li>Quem está em <b>CryoSleep</b> não gasta nada.</li>
+      <li>Menores de <b>13 anos</b> não gastam nada.</li>
+      <li>Mesmo grupo = mesmo <b>planeta</b> e mesmo <b>lado</b> da cabine.</li>
+      <li>Decks A, B, C, T são de <b>Europa</b>; deck G é da <b>Terra</b>.</li>
+      <li>Quem é da Terra nunca é <b>VIP</b>.</li>
+    </ul>
+    <div class="box"><b class="t">Por quê</b>Conferimos cada regra em 12.970 linhas: <b>0 exceções</b>. O que sobra é preenchido com <b>mediana</b> (números) ou <b>moda</b> (categorias).</div>
+  </div>
+</section>
+
+<!-- 10 CAT + PADRON -->
+<section class="slide">
+  <div class="kicker">Etapas 4 e 6</div>
+  <h2>Categorias <b>e padronização</b></h2>
+  <div class="body">
+    <div class="cols">
+      <div class="card"><h4>One-hot encoding</h4>CryoSleep e VIP viram 1/0. Planeta, destino, deck e lado viram colunas 0/1, uma por categoria.<br><br>Resultado: <b>29 colunas</b>.</div>
+      <div class="card"><h4>StandardScaler</h4>Cada coluna fica com média 0 e desvio 1. Importante para Regressão Logística e KNN.<br><br><code>fit</code> só no <b>treino</b>; o teste só recebe <code>transform</code>.</div>
+    </div>
+    <div class="box"><b class="t">Por quê só no treino?</b>Para o teste não "vazar" informação para o treino (data leakage).</div>
+  </div>
+</section>
+
+<!-- 11 OUTLIERS -->
+<section class="slide">
+  <div class="kicker">Etapa 5</div>
+  <h2>Outliers: IQR com <b>fator 8</b></h2>
+  <div class="body">
+    <pre>Q3 + 8 × IQR   <i>→  limite do GastoTotal</i></pre>
+    <ul style="margin-top:20px">
+      <li>Muita gente gasta zero, então o IQR é pequeno.</li>
+      <li>Fator 3 removia <b>6%</b> das linhas e a acurácia <b>piorava ~1,2 ponto</b>.</li>
+      <li>Fator 8 remove só ~<b>1%</b>: os casos realmente extremos.</li>
+      <li>O teste <b>não perde linhas</b>: o Kaggle exige previsão para todos.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 12 SELEÇÃO -->
+<section class="slide">
+  <div class="kicker">Etapa 7</div>
+  <h2>Seleção <b>de variáveis</b></h2>
+  <div class="body">
+    <ul>
+      <li>Uma <b>Random Forest</b> mede a importância de cada coluna.</li>
+      <li>Mantemos as com importância ≥ <b>0,2%</b>: ficam <b>26 de 29</b>.</li>
+      <li>Cortar em 2% derrubava ~1,5 ponto de acurácia.</li>
+      <li>O <b>CatBoost usa as 29</b>: empata na validação com ou sem as 3 removidas.</li>
+    </ul>
+    <div class="box"><b class="t">Detalhe</b>Por isso o app lê as colunas de cada modelo e escolhe as certas (29 ou 26).</div>
+  </div>
+</section>
+
+<!-- 13 TREINO -->
+<section class="slide">
+  <div class="kicker">Etapa 8</div>
+  <h2>Treino com <b>GridSearchCV + GroupKFold</b></h2>
+  <div class="body">
+    <div class="cols">
+      <div class="card"><h4>GridSearchCV</h4>Testa combinações de hiperparâmetros com validação cruzada de 5 partes e escolhe a melhor pela acurácia.</div>
+      <div class="card"><h4>GroupKFold</h4>Mantém cada <b>grupo de viagem inteiro</b> em uma só parte da validação.</div>
+    </div>
+    <div class="box"><b class="t">Por quê GroupKFold?</b>O teste do Kaggle tem grupos que o modelo nunca viu. Sem agrupar, membros do mesmo grupo "colariam" e a nota ficaria otimista demais.</div>
+  </div>
+</section>
+
+<!-- 14 RESULTADOS -->
+<section class="slide">
+  <div class="kicker">Resultados</div>
+  <h2>Comparando <b>os modelos</b></h2>
+  <div class="body">
+    <table>
+      <tr><th>Modelo</th><th>No app</th><th>Validação cruzada</th><th>Kaggle</th></tr>
+      <tr class="best"><td>CatBoost</td><td>padrão</td><td>0,812</td><td>0,808</td></tr>
+      <tr><td>Random Forest</td><td>sim</td><td>0,804</td><td>0,803</td></tr>
+      <tr><td>Regressão Logística</td><td>sim</td><td>0,788</td><td>0,793</td></tr>
+      <tr><td>KNN</td><td>sim</td><td>0,784</td><td>0,788</td></tr>
+    </table>
+    <p class="mut" style="font-size:19px;margin-top:14px">Também testados no notebook: SVM (0,803), Decision Tree (0,796) e Naive Bayes (0,765) no Kaggle.</p>
+  </div>
+</section>
+
+<!-- 15 CATBOOST -->
+<section class="slide">
+  <div class="kicker">Algoritmo extra</div>
+  <h2>O que é <b>CatBoost</b>?</h2>
+  <div class="body">
+    <div class="cols">
+      <div class="card"><h4>Boosting (CatBoost)</h4>Árvores treinadas <b>em sequência</b>: cada nova corrige os erros das anteriores.</div>
+      <div class="card"><h4>Bagging (Random Forest)</h4>Árvores <b>independentes</b> e tira a média das respostas.</div>
+    </div>
+    <ul style="font-size:24px;margin-top:20px">
+      <li><b>Árvores simétricas:</b> todos os nós de um nível fazem a mesma pergunta (regulariza).</li>
+      <li><b>Ordered boosting:</b> reduz o sobreajuste em bases pequenas.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 16 PKL -->
+<section class="slide">
+  <div class="kicker">Exportação</div>
+  <h2>Salvando <b>os arquivos .pkl</b></h2>
+  <div class="body">
+    <pre>joblib.dump(modelo, <i>'modelos/modelo_catboost.pkl'</i>)   <i># 4 modelos, um por algoritmo</i>
+joblib.dump(list(colunas), <i>'modelos/colunas_treino.pkl'</i>)
+joblib.dump(padronizador, <i>'modelos/padronizador.pkl'</i>)</pre>
+    <ul style="font-size:24px;margin-top:20px">
+      <li>Treinar leva minutos: fazemos <b>uma vez</b> e o app só carrega.</li>
+      <li><b>6 arquivos</b> no total: 4 modelos (CatBoost, Random Forest, KNN, Regressão Logística) + colunas + padronizador.</li>
+      <li>Gerados com <b>scikit-learn 1.6.1</b>: use essa versão para rodar local.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 17 APP ESTRUTURA -->
+<section class="slide">
+  <div class="kicker">O app</div>
+  <h2>Estrutura <b>do Streamlit</b></h2>
+  <div class="body" style="font-size:22px">
+    <table>
+      <tr><th>Trecho</th><th>O que faz</th></tr>
+      <tr><td><code>@st.cache_resource</code></td><td>Lê o .pkl uma vez só e guarda na memória</td></tr>
+      <tr><td><code>montar_linha()</code></td><td>Põe o passageiro digitado no formato do treino</td></tr>
+      <tr><td><code>st.sidebar</code></td><td>Escolha do modelo</td></tr>
+      <tr><td><code>st.tabs</code></td><td>Prever · Gráficos · Como funciona</td></tr>
+      <tr><td><code>st.metric</code></td><td>Chance (%), gasto total e modelo usado</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- 18 APP FLUXO -->
+<section class="slide">
+  <div class="kicker">O app</div>
+  <h2>O que acontece ao clicar <b>em "Prever"</b></h2>
+  <div class="body" style="font-size:22px">
+    <pre><i># 1 carrega modelo, colunas e padronizador</i>
+<i># 2 monta a linha igual ao treino</i>
+linha = montar_linha(passageiro, colunas_treino)
+<i># 3 padroniza com o MESMO scaler do treino</i>
+dados = padronizador.transform(linha)
+<i># 4 usa as colunas do modelo (29 ou 26)</i>
+<i># 5 chance de ser transportado</i>
+prob = modelo.predict_proba(dados)[0][1]
+<i># 6 50% ou mais = transportado</i></pre>
+    <div class="box" style="font-size:21px;margin-top:16px"><b class="t">Por quê?</b>O modelo só entende o formato do treino: mesmas colunas, mesma ordem, mesma escala. Se algo diferir, a previsão sai errada <b>sem dar erro</b>.</div>
+  </div>
+</section>
+
+<!-- 19 GRÁFICOS -->
+<section class="slide">
+  <div class="kicker">O app</div>
+  <h2>Aba <b>Gráficos</b></h2>
+  <div class="body">
+    <div class="cards c2">
+      <div class="card"><h4>Sono criogênico</h4>82% × 33%</div>
+      <div class="card"><h4>Planeta</h4>Europa 66% · Marte 52% · Terra 42%</div>
+      <div class="card"><h4>Idade e deck</h4>Crianças e decks B/C se destacam</div>
+      <div class="card"><h4>Tamanho do grupo</h4>Sozinho 45% até 4 pessoas 64%</div>
+    </div>
+    <div class="box"><b class="t">Cuidado</b>São taxas observadas: mostram <b>associação, não causa</b>. O app avisa isso na legenda.</div>
+  </div>
+</section>
+
+<!-- 20 NGROK -->
+<section class="slide">
+  <div class="kicker">Deploy</div>
+  <h2>Colab <b>+ Ngrok</b></h2>
+  <div class="body">
+    <ul style="font-size:25px">
+      <li>No Colab o app roda em <code>localhost:8501</code>, que <b>só existe lá dentro</b>.</li>
+      <li>O <b>Ngrok</b> abre um túnel e devolve uma URL pública apontando para essa porta.</li>
+      <li>O link só funciona <b>enquanto a sessão do Colab estiver ativa</b>: por isso há prints.</li>
+    </ul>
+    <pre style="font-size:20px;margin-top:14px">ngrok.set_auth_token(NGROK_TOKEN)
+url = ngrok.connect(8501)
+print(url.public_url)</pre>
+    <p style="font-size:20px;margin-top:10px"><b>Nosso link:</b> <a href="https://3702-35-204-73-86.ngrok-free.app/" target="_blank">https://3702-35-204-73-86.ngrok-free.app/</a></p>
+    <p class="mut" style="font-size:19px;margin-top:6px">Nunca suba o token real para o GitHub. Se der página em branco: <code>!cat logs.txt</code>.</p>
+  </div>
+</section>
+
+<!-- 21 PRINTS -->
+<section class="slide">
+  <div class="kicker">Evidências</div>
+  <h2>O app <b>funcionando pelo Ngrok</b></h2>
+  <div class="body">
+    <div class="imgs">
+      <figure><img src="prints_ngrok/01_formulario.png" alt=""><figcaption>Formulário</figcaption></figure>
+      <figure><img src="prints_ngrok/02_resultado_transportado.png" alt=""><figcaption>Resultado: transportado</figcaption></figure>
+      <figure><img src="prints_ngrok/04_graficos_cryosleep.png" alt=""><figcaption>Gráfico por sono criogênico</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section class="slide">
+  <div class="kicker">Checklist do trabalho · <span class="cnt">0/0</span></div>
+  <h2>Tudo <b>entregue?</b></h2>
+  <div class="body" style="font-size:22px">
+    <ul class="chk">
+      <li><label><input type="checkbox"><div><b>Modelos salvos em .pkl</b> (joblib) com colunas e padronizador<small>pasta <code>modelos/</code></small></div></label></li>
+      <li><label><input type="checkbox"><div><b>App Streamlit</b>: formulário, botão Prever, barra lateral e abas<small>arquivo <code>app_spaceship.py</code></small></div></label></li>
+      <li><label><input type="checkbox"><div><b>Gráficos e visual</b><small>Altair (biblioteca de gráficos) + CSS (estilo visual) + tema roxo</small></div></label></li>
+      <li><label><input type="checkbox"><div><b>Colab + Ngrok</b> (link público)<small><a href="https://3702-35-204-73-86.ngrok-free.app/" target="_blank">https://3702-35-204-73-86.ngrok-free.app/</a></small></div></label></li>
+      <li><label><input type="checkbox"><div><b>Prints pelo Ngrok + relatório em PDF</b><small>pasta <code>prints_ngrok/</code> e <code>relatorio_execucao.pdf</code></small></div></label></li>
+      <li><label><input type="checkbox"><div><b>Código no GitHub</b><small><a href="https://github.com/luansouzac/spaceship-titanic-streamlit" target="_blank">https://github.com/luansouzac/spaceship-titanic-streamlit</a></small></div></label></li>
+    </ul>
+    <p class="mut" style="font-size:17px;margin-top:8px">O link do Ngrok só abre enquanto a sessão do Colab estiver ativa. Confira a lista com o PDF do enunciado.</p>
+  </div>
+</section>
+
+<!-- CONCLUSÃO -->
+<section class="slide">
+  <div class="kicker">Conclusão</div>
+  <h2>A principal diferença <b>do trabalho anterior</b></h2>
+  <div class="body">
+    <div class="cols">
+      <div class="card"><h4>Antes (Aprendizado de Máquina)</h4>Treinar e comparar modelos no notebook. O resultado era uma <b>tabela de métricas</b> e arquivos de envio ao Kaggle.</div>
+      <div class="card" style="border-color:var(--p3);background:var(--soft)"><h4>Agora (Visualização de Dados)</h4>O modelo vira um <b>app web com link público</b>: qualquer pessoa digita os dados de um passageiro e vê a previsão.</div>
+    </div>
+    <ul style="font-size:24px;margin-top:22px">
+      <li>O tratamento dos dados é o mesmo; o novo é <b>.pkl, Streamlit e Ngrok</b>.</li>
+      <li>CatBoost foi o melhor: <b>81,2%</b> na validação e <b>0,808</b> no Kaggle.</li>
+      <li>Limite: o link só vive enquanto o Colab estiver aberto.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="hud"><span>Spaceship Titanic · <b id="ck">checklist 0/0</b></span><span class="mut">← → ou clique para navegar · F tela cheia</span><span><span id="num"></span><span id="nav"><button id="ant">‹</button><button id="prox">›</button></span></span></div>
+<div id="bar"></div>
+</div>
+
+
+<script>
+(function(){
+  var stage=document.getElementById('stage');
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var i=parseInt(location.hash.slice(1))-1||0;
+  function fit(){var s=Math.min(innerWidth/1280,innerHeight/720)*0.97;stage.style.transform='translate(-50%,-50%) scale('+s+')'}
+  function show(n){
+    i=Math.max(0,Math.min(slides.length-1,n));
+    slides.forEach(function(s,k){s.classList.toggle('on',k===i)});
+    document.getElementById('num').textContent=(i+1)+' / '+slides.length;
+    document.getElementById('bar').style.width=(100*(i+1)/slides.length)+'%';
+    history.replaceState(null,'','#'+(i+1));
+  }
+  addEventListener('resize',fit);fit();
+  addEventListener('keydown',function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();show(i+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){show(i-1)}
+    else if(e.key==='Home')show(0);else if(e.key==='End')show(slides.length-1);
+    else if(e.key==='f'||e.key==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}
+  });
+  document.getElementById('prox').onclick=function(){show(i+1)};
+  document.getElementById('ant').onclick=function(){show(i-1)};
+  // clique no fundo avança (checkboxes e labels não)
+  stage.addEventListener('click',function(e){
+    if(e.target.closest('label,input,button,a'))return;
+    show(e.clientX>innerWidth/2?i+1:i-1);
+  });
+  // checklist salvo no navegador
+  var boxes=[].slice.call(document.querySelectorAll('.chk input'));
+  var key='spaceship_slides_checklist';var saved={};
+  try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch(e){}
+  function conta(){
+    var n=boxes.filter(function(b){return b.checked}).length,t=boxes.length;
+    document.getElementById('ck').textContent='checklist '+n+'/'+t;
+    [].forEach.call(document.querySelectorAll('.cnt'),function(c){c.textContent=n+'/'+t+' marcados'});
+  }
+  boxes.forEach(function(b,k){
+    b.checked=!!saved[k];
+    b.addEventListener('change',function(){saved[k]=b.checked;try{localStorage.setItem(key,JSON.stringify(saved))}catch(e){};conta()});
+  });
+  conta();show(i);
+})();
+</script>
+</body>
+</html>
